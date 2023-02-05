@@ -73,8 +73,8 @@ void setup() {
   // Configuracion del encoder
   config_enc();
 
-dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
-dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
+  dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
+  dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
   Kp=0.5;
   Ki=0.3;
   Kd=0.001;
@@ -162,11 +162,12 @@ void config_PWM(){
     pinMode(PWM_f2, OUTPUT); 
     pinMode(2, OUTPUT);
     // Configuracion LED PWM 
-    //ledcSetup(pwmChannel, pwmfreq, pwmresolution);
-    //ledcSetup(pwmChannel2, pwmfreq, pwmresolution);
+    ledcSetup(pwmChannel, pwmfreq, pwmresolution);
+    ledcSetup(pwmChannel2, pwmfreq, pwmresolution);
     // Asignar el controlador PWM al GPIO
-    //ledcAttachPin(PWM_Pin, 0);
-    //ledcAttachPin(PWM_Pin2, 1);
+    
+    ledcAttachPin(PWM_Pin, 0);
+    ledcAttachPin(PWM_Pin2, 1);
 }  
 
 ////////////////////////////////////////////////////////////////////////////////////

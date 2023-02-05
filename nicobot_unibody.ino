@@ -46,8 +46,8 @@ void loop() {
         }
           
         if (str.indexOf("r") == 0 ) {
-            ang_cnt=0;
-            ang_cnt2=0;
+            //ang_cnt=0;
+            //ang_cnt2=0;
             //reset contador encoder
             Serial.println("OK"); 
             Serial.flush();
@@ -56,7 +56,7 @@ void loop() {
         if (str.indexOf("m") == 0 ) {
             Serial2.println(str);
             str.replace("m", "");
-            int i1 = str.indexOf(",");
+            int i1 = str.indexOf(" ");
 
             String firstValue = str.substring(0, i1);
             String second = str.substring(i1 + 1);
@@ -109,8 +109,8 @@ void excita_motor(float v_motor){
     }
   	
   	// Excitacion del motor con PWM
-  	//ledcWrite(0, dutyCycle);
-    dacWrite(26,dutyCycle);
+  	ledcWrite(0, dutyCycle);
+    //dacWrite(26,dutyCycle);
 }  
 void excita_motor2(float v_motor){
     
@@ -144,6 +144,6 @@ void excita_motor2(float v_motor){
     }
   	
   	// Excitacion del motor con PWM
-  	//ledcWrite(1, dutyCycle2);
-    dacWrite(25,dutyCycle2);
+  	ledcWrite(1, dutyCycle2);
+    //dacWrite(25,dutyCycle2);
 }  

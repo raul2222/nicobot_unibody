@@ -59,7 +59,7 @@ void task_loopcontr(void* arg) {
             if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
           }
           if( setpoint == 0) {
-            clean();
+            //clean();
           } else {
             excita_motor(output);
           }
@@ -128,7 +128,7 @@ void task_loopcontr2(void* arg) {
             if (abs(output2) < volt_min and setpoint2 < 0) output2 = -volt_min ;
           }
           if( setpoint2 == 0) {
-            clean2();
+            //clean2();
           } else {
             excita_motor2(output2);
           }
