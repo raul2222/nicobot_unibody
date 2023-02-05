@@ -1,40 +1,18 @@
 
 
-#define RXD2 16
-#define TXD2 17
-
-#define EEPROM_SIZE 512
-#define EE_1 0
-#define EE_2 64
-#define EE_3 128
-#define ACTIVA_P1A
-//#define DEBUG_P1A
-#define ACTIVA_P1B1
-#define ACTIVA_P1B2
-#define ACTIVA_P1B3
-#define ACTIVA_P1C
-#define DEBUG_P1C
-#define ACTIVA_P1D2
-#define ACTIVA_P1D3
-// Display OLED ///////////////////////////////////////////////////////////////////////////
-#include <Adafruit_SSD1306.h>
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-
 // Parametros cola de la interrupcion del encoder ///////////////////////////////////////
 #define TAM_COLA_I 1024 /*num mensajes*/
 #define TAM_MSG_I 1 /*num caracteres por mensaje*/
 
 // TIEMPOS
-#define BLOQUEO_TAREA_LOOPCONTR_MS 10
-#define BLOQUEO_TAREA_MEDIDA_MS 250
+#define BLOQUEO_TAREA_LOOPCONTR_MS 10 
+#define BLOQUEO_TAREA_MEDIDA_MS 100
 
-int dutyCycle =0;
-
-float volt_max = 12.0;
-float volt_min = 1.05;
+int dutyCycle = 0;
+uint8_t r=0;
 float flancos = 0;
+float volt_max = 11.0;
+float volt_min = 0.55;
 float Akpi=0;
 float Akp=0;
 float error_2=0; // e(t-2)
@@ -55,19 +33,28 @@ float Kp = 0;
 float Ki = 0;
 float Kd = 0;
 float setpoint = 0;
-float dt = (BLOQUEO_TAREA_LOOPCONTR_MS / portTICK_PERIOD_MS);;
+float dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
 float z_i = 0;
 float z_d = 0;
 float Tiuser = 0;
 float Tduser = 0;
 float Ti = 0;
 float Td = 0;
+int ACTIVA_P1C_MED_ANG = 0;
+int32_t ang_cnt = 0;
+float v_medida = 0;     
+float a_medida = 0;
+int8_t start_stop = 0;  
+int direccion = 0;
+int direccion_ant = 0;  
+float anterior = 0;
+float da = 0;
+float error_anterior = 0;
 
-int dutyCycle2 =0;
 
-float volt_max2 = 12.0;
-float volt_min2 = 1.05;
-float flancos2 = 0;
+int dutyCycle2 = 0;
+uint8_t r2=0;
+
 float Akpi2=0;
 float Akp2=0;
 float error_22=0; // e(t-2)
@@ -88,22 +75,32 @@ float Kp2 = 0;
 float Ki2 = 0;
 float Kd2 = 0;
 float setpoint2 = 0;
-float dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / portTICK_PERIOD_MS);;
-float z_i2 = 0;
+float dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
+float z_i2= 0;
 float z_d2 = 0;
 float Tiuser2 = 0;
 float Tduser2 = 0;
 float Ti2 = 0;
 float Td2 = 0;
+int ACTIVA_P1C_MED_ANG2 = 0;
+int32_t ang_cnt2 = 0;
+float v_medida2 = 0;     
+float a_medida2 = 0;
+int8_t start_stop2 = 0;  
+int direccion2 = 0;
+int direccion_ant2 = 0;  
+float anterior2 = 0;
+float da2 = 0;
+float error_anterior2 = 0;
+
 
 
 // Configuración PWM  ////////////////////////////////////////////////////////////////////
 uint32_t pwmfreq = 1000; // 1KHz
 const uint8_t pwmChannel = 0;
-const uint8_t pwmChannel2 = 1;
 const uint8_t pwmresolution = 8;
 const int PWM_Max = pow(2,pwmresolution)-1; //
-
+const uint8_t pwmChannel2 = 1;
 //adc
 //Adafruit_ADS1115 ads;
 float current = 0;
@@ -111,23 +108,18 @@ int16_t adc0 = 0;
 
 
 // Pines driver motor ///////////////A/////////////////////////////////////////////////////
-
-const uint8_t PWM_Pin = 21; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f = 27; // Entrada PWM1 // direccion
-
-
-
-const uint8_t PWM_Pin2 = 22; // Entrada EN 
-const uint8_t PWM_f2 = 14; // Entrada PWM1 
-
-
-
+// RIGHT
+const uint8_t PWM_Pin = 26; // Entrada EN // para mi controlador es la unica salida pwm
+const uint8_t PWM_f = 14; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin = 32;
+//LEFT
+const uint8_t PWM_Pin2 = 25; // Entrada EN // para mi controlador es la unica salida pwm
+const uint8_t PWM_f2 = 12; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin2 = 35;
 // Voltaje maximo motor ////////////////////////////////////////////////////////////////////
 float SupplyVolt = 12;
 
-// Pines encoder ////////////////////////////////////////////////////////////////////
-const uint8_t A_enc_pin = 32;
-const uint8_t B_enc_pin = 34;
+
 
 // Conversión a angulo y velocidad del Pololu 3072
 //const float conv_rad = ; 
@@ -149,7 +141,7 @@ void puesta_a_cero();
 void init_params();
 void config_ADC();
 void clean();
-void config_wire();
+void clean2();
 void excita_motor2(float v_motor);
 
 // TABLA VELOCIDAD-VOLTAJE P1D
@@ -159,54 +151,10 @@ const float Vol_LUT[LONG_LUT] = {0.6,  1 ,  1.5 , 2 ,  3,   4,  5,  6, 7, 8, 9, 
 // Vector de velocidades
 const float Vel_LUT[LONG_LUT] = {0.25,0.7, 1.12, 1.58, 2.5, 3.25, 4.1, 5, 5.91, 6.75,7.58,7.58 };
 
-// Variables globales ////////////////////////////////////////////////////////////////////
-int ACTIVA_P1C_MED_ANG = 0;
-int ACTIVA_P1C_MED_ANG2 = 0;
 
-int32_t ang_cnt = 0;
-float v_medida = 0;     // Valor medido de angulo o velocidad -----------------
-float a_medida = 0;
-int8_t start_stop = 0;  //1 -> en funcionamiento | 0 -> parado 
-float K_p = 0;
-float T_i = 0; // Ki
-float T_d = 0; // Kd
-int direccion = 0;
-int direccion_ant = 0;  // variable global de función excita_motor
-
-int32_t ang_cnt2 = 0;
-float v_medida2 = 0;     // Valor medido de angulo o velocidad -----------------
-float a_medida2 = 0;
-int8_t start_stop2 = 0;  //1 -> en funcionamiento | 0 -> parado 
-float K_p2 = 0;
-float T_i2 = 0; // Ki
-float T_d2 = 0; // Kd
-int direccion2 = 0;
-int direccion_ant2 = 0;  // variable global de función excita_motor
-
-// Variables globales task_loopcontr ///////////////////////////////////////////////////////
-float anterior = 0;
-float anterior2 = 0;
-float V_i_anterior = 0;
-float error = 0;
-float volt = 0;
-float V_p = 0;
-float V_i = 0;
-float V_d = 0;
-float da = 0;
-float error_anterior = 0;
-bool windup_bool = false; bool windup_state = false;float windup_value = 6.1;
-float Tcb = 2;
-float V_i_windup = 0;
-float voltdeadzone = 0; 
-float da2 = 0;
-// Variables filtro derivativo
-//float alpha = 4.0;
-bool fd_bool = 1;
-float fd = 0;
-float fd_anterior = 0;
 
 // Declaracion objetos  ////////////////////////////////////////////////////////////////////
 xQueueHandle cola_enc; // Cola encoder
-xQueueHandle cola_enc2; // Cola encoder
 
+xQueueHandle cola_enc2; 
 

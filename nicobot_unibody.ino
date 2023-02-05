@@ -1,14 +1,16 @@
+/* 
+PRACTICA 1: IMPLEMENTACION DE UN CONTROLADOR PARA UN MOTOR DE DC
+*/
+// DECLARACIONES //////////////////////////////////////////////////////////////////////////
 
-#define NOMBRE_PRAC "ARTICUBOT-ESP32"
+
+#define NOMBRE_PRAC "PID"
 #define VERSION_SW "0.1"
 
-// Choose the wheel
-#define LEFT
-//#define RIGHT
+#define ACTIVA_R // mantener descomentado es el Dual TB9051FTG Motor Driver para Raspberry Pi
 
 #define ACTIVA_DEBUG
-#define ACTIVA_R
-#include <Wire.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "esp_log.h"
@@ -20,108 +22,20 @@
 #include "extras.h"
 #include "keyinput.h"
 #include "1-loopcontr.h"
+
 #include "log.h"
-#define SDA_PIN 21
-#define SCL_PIN 22
-#define AUTO_STOP_INTERVAL 2000
-long lastMotorCommand = 0;
-/*
-#ifdef LEFT ////////////////
 
-#define I2C_SLAVE_ADDR_L 0x01
-void receiveEven_l(int howMany);
-void requestEvent_l();
-String data = "";
-String data_enc = "";
-
-void receiveEvent_l(int howMany)
-{ 
-  lastMotorCommand = millis();  
-  data = "";
-  while( Wire.available()){
-    data += (char)Wire.read();
-    
-  }
-  if(data == "r"){
-    clean();
-  } else {
-    Serial.println(data.toFloat());
-    ref_val = setpoint = data.toFloat();
-    start_stop=1;
-  }
-}
-
-void requestEvent_l()
-{
-  data_enc = String(ang_cnt);
-  char char_array[data_enc.length()+1];
-  data_enc.toCharArray(char_array, data_enc.length()+1);
-  Wire.write(char_array);
-  //Serial.println(char_array);
-}
-
-#endif /////////////////////
-
-*/
-/*
-
-#ifdef RIGHT /////////////////
-
-#define I2C_SLAVE_ADDR_R 0x02
-void receiveEven_r(int howMany);
-void requestEvent_r();
-String data = "";
-String data_enc = "";
-
-void receiveEvent_r(int howMany)
-{ 
-  lastMotorCommand = millis();  
-  data = "";
-  while( Wire.available()){
-    data += (char)Wire.read();
-    
-  }
-  if(data == "r"){
-    clean();
-  } else {
-    Serial.println(data.toFloat());
-    ref_val = setpoint = data.toFloat();
-    start_stop=1;
-  }
-}
-
-void requestEvent_r()
-{
-  data_enc = String(ang_cnt);
-  char char_array[data_enc.length()+1];
-  data_enc.toCharArray(char_array, data_enc.length()+1);
-  Wire.write(char_array);
-
-}
-
-#endif //////////////
-*/
 #include "setup.h"
 
-void loop() {
 /*
-  // LED BUILD IN
-  if (start_stop){
-    digitalWrite(2,HIGH);
-  } else {
-    digitalWrite(2,LOW);
-  }
+LOOP ---- NO USAR ------------------------------------------------------------------- 
+*/
+void loop() {
 
-  // TIMEOUT CONTROL
-  if (millis()>(AUTO_STOP_INTERVAL + lastMotorCommand) and lastMotorCommand > 0){
-    ref_val = setpoint = 0;
-  }
-
-  delay(1);
-  */
 }
 
 // FUNCIONES ////////////////////////////////////////////////////////////////////////
+// Funcion excitacion del motor con PWM
 
 void excita_motor(float v_motor){
     
@@ -131,23 +45,22 @@ void excita_motor(float v_motor){
     }else{
         direccion = 0;
     }
-    if(direccion_ant != direccion){ //("Cambio de sentido");
-
+    
+    if(direccion_ant != direccion){  //("Cambio de sentido");
     }
-        if(v_motor > 0){    
-            digitalWrite(PWM_f, HIGH);
-            //digitalWrite(PWM_r, LOW);
-        }
-        if(v_motor < 0){      
-            v_motor = abs(v_motor);// valor en positivo del voltaje el cambio de direccion lo hacen las variables
-            digitalWrite(PWM_f, LOW);
-            //igitalWrite(PWM_r, HIGH);
-       }
-  
+    if(v_motor > 0){    //Serial.println("Hacia adelante");
+        digitalWrite(PWM_f, 0); // el pin de direccion
+    }
+    if(v_motor < 0){    //("Hacia atras");
+        v_motor = abs(v_motor); // valor en positivo del voltaje el cambio de direccion lo hacen las variables
+        digitalWrite(PWM_f, 1);
+    }
+
     direccion_ant = direccion;
-
-    dutyCycle = (int) ((v_motor * PWM_Max)/12);
-
+  
+  	// Calcula y limita el valor de configuración del PWM
+    dutyCycle = (int) ((v_motor * 255)/12);
+    // El valor de excitación debe estar entro 0 y PWM_Max
     if(dutyCycle >= PWM_Max){
         dutyCycle = PWM_Max;
     }
@@ -155,12 +68,9 @@ void excita_motor(float v_motor){
         dutyCycle = 0;
     }
   	
-  	
+  	// Excitacion del motor con PWM
   	ledcWrite(0, dutyCycle);
-    // dacWrite(DAC2,dutyCycle); 
-  }  
-
-
+}  
 void excita_motor2(float v_motor){
     
     // Obtención de la dirección
@@ -169,23 +79,22 @@ void excita_motor2(float v_motor){
     }else{
         direccion2 = 0;
     }
-    if(direccion_ant2 != direccion2){ //("Cambio de sentido");
-
+    
+    if(direccion_ant2 != direccion2){  //("Cambio de sentido");
     }
-        if(v_motor > 0){    
-            digitalWrite(PWM_f2, LOW);
-            //digitalWrite(PWM_r, LOW);
-        }
-        if(v_motor < 0){      
-            v_motor = abs(v_motor);// valor en positivo del voltaje el cambio de direccion lo hacen las variables
-            digitalWrite(PWM_f2, HIGH);
-            //igitalWrite(PWM_r, HIGH);
-       }
+    if(v_motor > 0){    //Serial.println("Hacia adelante");
+        digitalWrite(PWM_f2, 1); // el pin de direccion
+    }
+    if(v_motor < 0){    //("Hacia atras");
+        v_motor = abs(v_motor); // valor en positivo del voltaje el cambio de direccion lo hacen las variables
+        digitalWrite(PWM_f2, 0);
+    }
 
     direccion_ant2 = direccion2;
-
-    dutyCycle2 = (int) ((v_motor * PWM_Max)/12);
-
+  
+  	// Calcula y limita el valor de configuración del PWM
+    dutyCycle2 = (int) ((v_motor * 255)/12);
+    // El valor de excitación debe estar entro 0 y PWM_Max
     if(dutyCycle2 >= PWM_Max){
         dutyCycle2 = PWM_Max;
     }
@@ -193,7 +102,6 @@ void excita_motor2(float v_motor){
         dutyCycle2 = 0;
     }
   	
+  	// Excitacion del motor con PWM
   	ledcWrite(1, dutyCycle2);
-    
-  }  
-
+}  
