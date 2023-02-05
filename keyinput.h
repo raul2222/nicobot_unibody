@@ -1,3 +1,70 @@
+
+
+
+void task_serial(void* arg)
+{
+  
+  while (1) {
+    if(Serial.available() > 0){
+
+       lastMotorCommand = millis();
+       String str = Serial.readStringUntil('\r');
+       Serial2.println(str);
+       if (str.indexOf("e") == 0 ) {
+            Serial.print(ang_cnt); 
+            Serial.print(" "); 
+            Serial.println(ang_cnt2);
+            Serial.flush();
+            Serial2.print(ang_cnt); 
+            Serial2.print(" "); 
+            Serial2.println(ang_cnt2);
+        }
+
+        if (str.indexOf("u") == 0 ) {
+            Serial.println("OK"); 
+            Serial.flush();
+        }
+          
+        if (str.indexOf("r") == 0 ) {
+            //ang_cnt=0;
+            //ang_cnt2=0;
+            //reset contador encoder
+            Serial.println("OK"); 
+            Serial.flush();
+        }
+                
+        if (str.indexOf("m") == 0 ) {
+            //Serial2.println(str);
+            str.replace("m", "");
+            int i1 = str.indexOf(" ");
+
+            String firstValue = str.substring(0, i1);
+            String second = str.substring(i1 + 1);
+            setpoint = firstValue.toFloat();
+            setpoint2 = second.toFloat();
+            Serial.println("OK"); 
+            Serial.flush();
+            Serial2.println(setpoint);
+            Serial2.println(setpoint2);
+
+        }
+
+        if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
+          setpoint = 0;
+          setpoint2 = 0;
+        }
+          
+
+    }
+    if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
+          setpoint = 0;
+          setpoint2 = 0;
+    }
+    vTaskDelay(20 / portTICK_PERIOD_MS);
+  }
+}
+
+
 /* 
 Tarea de configuración de parámetros  #####################################################################
 */
@@ -6,8 +73,8 @@ void task_config(void *pvParameter) {
 
   while(1) { 
     // Detectar caracter enviado
-    if(Serial.available() > 0){
-        String str = Serial.readStringUntil('\n');
+    if(Serial2.available() > 0){
+        String str = Serial2.readStringUntil('\n');
         ini_char = str[0];
         if(str.indexOf("V") == 0 or str.indexOf("v") == 0){
             str.replace("V","");str.replace("v","");
@@ -23,7 +90,7 @@ void task_config(void *pvParameter) {
             ACTIVA_P1C_MED_ANG = 0;
             //init_eeprom();
             #ifdef ACTIVA_DEBUG
-            Serial.print("----Modo Velocidad----");
+            Serial2.print("----Modo Velocidad----");
             #endif
             
       }
@@ -33,17 +100,17 @@ void task_config(void *pvParameter) {
             setpoint2 = setpoint;
             if( ACTIVA_P1C_MED_ANG == 1 ){
               #ifdef ACTIVA_DEBUG
-                Serial.print("Angulo= ");
-                Serial.print(setpoint, 2);
-                Serial.println("º");
+                Serial2.print("Angulo= ");
+                Serial2.print(setpoint, 2);
+                Serial2.println("º");
               #endif
             }else{
 
                 
                 #ifdef ACTIVA_DEBUG
-                Serial.print("Velocidad= ");
-                Serial.print(setpoint);
-                Serial.println("rps");
+                Serial2.print("Velocidad= ");
+                Serial2.print(setpoint);
+                Serial2.println("rps");
                 #endif
             }
 
@@ -54,7 +121,7 @@ void task_config(void *pvParameter) {
             volt_max = 3.0;
             clean();   //init_eeprom();
             #ifdef ACTIVA_DEBUG
-            Serial.println("----Modo Angulo----");
+            Serial2.println("----Modo Angulo----");
             #endif
       }
 
@@ -62,7 +129,7 @@ void task_config(void *pvParameter) {
             str.replace("Z", "");str.replace("z", "");
              start_stop = 1;
              #ifdef ACTIVA_DEBUG
-             Serial.println("--START--");
+             Serial2.println("--START--");
              #endif
              
       }
@@ -74,13 +141,13 @@ void task_config(void *pvParameter) {
               start_stop = 1;
               
               #ifdef ACTIVA_DEBUG
-              Serial.println("--START--");
+              Serial2.println("--START--");
               #endif
           }
           else{
               start_stop = 0;
               #ifdef ACTIVA_DEBUG
-              Serial.println("--STOP--");
+              Serial2.println("--STOP--");
               #endif
           }
           clean();

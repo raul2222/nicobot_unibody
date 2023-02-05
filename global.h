@@ -6,11 +6,15 @@
 
 // TIEMPOS
 #define BLOQUEO_TAREA_LOOPCONTR_MS 10
-#define BLOQUEO_TAREA_MEDIDA_MS 100
+#define BLOQUEO_TAREA_MEDIDA_MS 700
+
+#define AUTO_STOP_INTERVAL 2000
+long lastMotorCommand = 0;
+
 
 int dutyCycle = 0;
 uint8_t r=0;
-float flancos = 0;
+float flancos = 834.0;
 float volt_max = 11.0;
 float volt_min = 0.5;
 float Akpi=0;
@@ -143,6 +147,7 @@ void config_ADC();
 void clean();
 void clean2();
 void excita_motor2(float v_motor);
+void task_serial(void* arg);
 
 // TABLA VELOCIDAD-VOLTAJE P1D
 #define LONG_LUT 12

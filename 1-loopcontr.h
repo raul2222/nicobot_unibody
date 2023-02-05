@@ -59,7 +59,7 @@ void task_loopcontr(void* arg) {
             if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
           }
           if( setpoint == 0) {
-            //clean();
+            clean();
           } else {
             excita_motor(output);
           }
@@ -128,7 +128,7 @@ void task_loopcontr2(void* arg) {
             if (abs(output2) < volt_min and setpoint2 < 0) output2 = -volt_min ;
           }
           if( setpoint2 == 0) {
-            //clean2();
+            clean2();
           } else {
             excita_motor2(output2);
           }
@@ -155,7 +155,7 @@ void clean(){
   d0 = 0;
   fd1 = 0;
   fd0 = 0;
-  ang_cnt =0;      
+     
 }
 
 void clean2(){
@@ -171,7 +171,7 @@ void clean2(){
   d02 = 0;
   fd12 = 0;
   fd02 = 0;
-  ang_cnt2 =0;      
+   
 }
 /*
  Tarea task_enc #####################################################################

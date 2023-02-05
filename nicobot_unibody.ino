@@ -21,58 +21,15 @@ PRACTICA 1: IMPLEMENTACION DE UN CONTROLADOR PARA UN MOTOR DE DC
 #include "1-loopcontr.h"
 #include "log.h"
 #include "setup.h"
-#define AUTO_STOP_INTERVAL 2000
-long lastMotorCommand = 0;
 
 /*
 LOOP ---- NO USAR ------------------------------------------------------------------- 
 */
 void loop() {
 
-    if(Serial.available() > 0){
 
-       lastMotorCommand = millis();
-       String str = Serial.readStringUntil('\r');
-       if (str.indexOf("e") == 0 ) {
-            Serial.print(ang_cnt); 
-            Serial.print(" "); 
-            Serial.println(ang_cnt2);
-            Serial.flush();
-        }
-
-        if (str.indexOf("u") == 0 ) {
-            Serial.println("OK"); 
-            Serial.flush();
-        }
-          
-        if (str.indexOf("r") == 0 ) {
-            //ang_cnt=0;
-            //ang_cnt2=0;
-            //reset contador encoder
-            Serial.println("OK"); 
-            Serial.flush();
-        }
-                
-        if (str.indexOf("m") == 0 ) {
-            Serial2.println(str);
-            str.replace("m", "");
-            int i1 = str.indexOf(" ");
-
-            String firstValue = str.substring(0, i1);
-            String second = str.substring(i1 + 1);
-            setpoint = firstValue.toFloat();
-            setpoint2 = second.toFloat();
-            Serial.println("OK"); 
-            Serial.flush();
-        }
-          
-
-    }
-    if (millis()>(AUTO_STOP_INTERVAL + lastMotorCommand) ){
-          setpoint = 0;
-          setpoint2 = 0;
-    }
 }
+
 
 // FUNCIONES ////////////////////////////////////////////////////////////////////////
 // Funcion excitacion del motor con PWM

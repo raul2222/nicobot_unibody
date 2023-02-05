@@ -27,29 +27,29 @@ void setup() {
   }
 
    //Crear la tarea task_enc
-  if(xTaskCreatePinnedToCore( task_enc , "task_enc", 2048, NULL, 3, NULL,1) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_enc , "task_enc", 4096, NULL, 3, NULL,1) != pdPASS){
       Serial.println("Error en creacion tarea task_enc");
       exit(-1);
   }
 
-  if(xTaskCreatePinnedToCore( task_enc2 , "task_enc2", 2048, NULL, 3, NULL,0) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_enc2 , "task_enc2", 4096, NULL, 3, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_enc");
       exit(-1);
   }
 
   // Crear la tarea task_config
-  /*if(xTaskCreatePinnedToCore( task_config , "task_config", 2048, NULL, 1, NULL,0) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_config , "task_config", 2048, NULL, 1, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_config");
       exit(-1);
-  }*/
+  }
 
   // Crear la tarea task_loopcontr
-  if(xTaskCreatePinnedToCore( task_loopcontr , "task_loopcontr", 2048, NULL, 2, NULL,1) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_loopcontr , "task_loopcontr", 4096, NULL, 2, NULL,1) != pdPASS){
       Serial.println("Error en creacion tarea task_loopcontr");
       exit(-1);
   }
 
-  if(xTaskCreatePinnedToCore( task_loopcontr2 , "task_loopcontr2", 2048, NULL, 2, NULL,0) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_loopcontr2 , "task_loopcontr2", 4096, NULL, 2, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_loopcontr");
       exit(-1);
   }
@@ -62,12 +62,15 @@ void setup() {
 
 
    // Crear la tarea task_medidas
-  /*if(xTaskCreatePinnedToCore( task_medidas , "task_medidas", 2048, NULL,1, NULL,0) != pdPASS){
+  if(xTaskCreatePinnedToCore( task_medidas , "task_medidas", 2048, NULL,1, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_medidas");
       exit(-1);
-  }*/
+  }
 
-  // Crear la tarea task_adc
+ if(xTaskCreatePinnedToCore( task_serial , "task_serial", 1024, NULL, 5, NULL, 0) != pdPASS){
+      Serial.println("Error en creacion tarea task_medidas");
+      exit(-1);
+ }
 
 
   // Configuracion del encoder
@@ -175,7 +178,8 @@ void config_PWM(){
 ////////////////////////////////////////////////////////////////////////////////////
 void config_sp(){
   Serial.begin(57600);
-
+  Serial2.begin(57600);
+  while (!Serial) {}
 }  
 
 
