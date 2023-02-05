@@ -55,8 +55,8 @@ void task_loopcontr(void* arg) {
           if (ACTIVA_P1C_MED_ANG == 1) {
             no_error_motor_break();
           } else {
-            //if (abs(output) < volt_min and setpoint > 0) output = volt_min ; 
-            //if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
+            if (abs(output) < volt_min and setpoint > 0) output = volt_min ; 
+            if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
           }
           if( setpoint == 0) {
             clean();
@@ -124,8 +124,8 @@ void task_loopcontr2(void* arg) {
           if (ACTIVA_P1C_MED_ANG2 == 1) {
             //no_error_motor_break();
           } else {
-            //if (abs(output) < volt_min and setpoint > 0) output = volt_min ; 
-            //if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
+            if (abs(output2) < volt_min and setpoint2 > 0) output2 = volt_min ; 
+            if (abs(output2) < volt_min and setpoint2 < 0) output2 = -volt_min ;
           }
           if( setpoint2 == 0) {
             clean2();

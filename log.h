@@ -55,13 +55,13 @@ void task_medidas(void* arg)
       Serial.print(", D: ");
       Serial.print(dutyCycle2);
 
-      /*
+      
       Serial.print(" Kp:");
-      Serial.print(Kp, 6);
+      Serial.print(Kp, 5);
       Serial.print(" Ki:");
-      Serial.print(Ki, 6);
+      Serial.print(Ki, 5);
       Serial.print(" Kd:");
-      Serial.print(Kd, 6);*/
+      Serial.print(Kd, 5);
 
       /*Serial.print(", A:");
       Serial.print(current,4);        // Print Raw Reading

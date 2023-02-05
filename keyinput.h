@@ -29,7 +29,8 @@ void task_config(void *pvParameter) {
       }
       if (str.indexOf("R") == 0  or str.indexOf("r") == 0) {
             str.replace("R", "");str.replace("r", "");str.replace(",",".");
-            setpoint2 = str.toFloat();
+            setpoint = str.toFloat();
+            setpoint2 = setpoint;
             if( ACTIVA_P1C_MED_ANG == 1 ){
               #ifdef ACTIVA_DEBUG
                 Serial.print("Angulo= ");
@@ -113,6 +114,6 @@ void task_config(void *pvParameter) {
 
 
     // Activacion de la tarea cada 0.1s
-    vTaskDelay(20 / portTICK_PERIOD_MS);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
   }
 }

@@ -38,10 +38,10 @@ void setup() {
   }
 
   // Crear la tarea task_config
-  if(xTaskCreatePinnedToCore( task_config , "task_config", 2048, NULL, 1, NULL,0) != pdPASS){
+  /*if(xTaskCreatePinnedToCore( task_config , "task_config", 2048, NULL, 1, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_config");
       exit(-1);
-  }
+  }*/
 
   // Crear la tarea task_loopcontr
   if(xTaskCreatePinnedToCore( task_loopcontr , "task_loopcontr", 2048, NULL, 2, NULL,1) != pdPASS){
@@ -55,17 +55,17 @@ void setup() {
   }
 
 
-  if(xTaskCreatePinnedToCore( task_adc , "task_adc", 2048, NULL, 3, NULL,0) != pdPASS){
+ /* if(xTaskCreatePinnedToCore( task_adc , "task_adc", 2048, NULL, 3, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_medidas");
       exit(-1);
-  }
+  }*/
 
 
    // Crear la tarea task_medidas
-  if(xTaskCreatePinnedToCore( task_medidas , "task_medidas", 2048, NULL, 3, NULL,0) != pdPASS){
+  /*if(xTaskCreatePinnedToCore( task_medidas , "task_medidas", 2048, NULL,1, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_medidas");
       exit(-1);
-  }
+  }*/
 
   // Crear la tarea task_adc
 
@@ -73,22 +73,23 @@ void setup() {
   // Configuracion del encoder
   config_enc();
 
-
-  Kp=0.6;
-  Ki=0.8;
-  Kd=0.01;
-  N = 2;
+dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
+dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
+  Kp=0.5;
+  Ki=0.3;
+  Kd=0.001;
+  N = 7;
   
   flancos = 834.0;
-  Kp2=0.6;
-  Ki2=0.8;
-  Kd2=0.01;
-  N2=2;
+  Kp2=0.5;
+  Ki2=0.3;
+  Kd2=0.001;
+  N2=7;
   
   ACTIVA_P1C_MED_ANG2 == 0;
   ACTIVA_P1C_MED_ANG == 0;
-  setpoint = 0;
-  setpoint2 = 0;
+  setpoint = 0; // LEFT
+  setpoint2 = 0;  // 
   start_stop=1;
   start_stop2=1;
 }
@@ -161,18 +162,18 @@ void config_PWM(){
     pinMode(PWM_f2, OUTPUT); 
     pinMode(2, OUTPUT);
     // Configuracion LED PWM 
-    ledcSetup(pwmChannel, pwmfreq, pwmresolution);
-    ledcSetup(pwmChannel2, pwmfreq, pwmresolution);
+    //ledcSetup(pwmChannel, pwmfreq, pwmresolution);
+    //ledcSetup(pwmChannel2, pwmfreq, pwmresolution);
     // Asignar el controlador PWM al GPIO
-    ledcAttachPin(PWM_Pin, 0);
-    ledcAttachPin(PWM_Pin2, 1);
+    //ledcAttachPin(PWM_Pin, 0);
+    //ledcAttachPin(PWM_Pin2, 1);
 }  
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Funcion configuracion del puerto serie
 ////////////////////////////////////////////////////////////////////////////////////
 void config_sp(){
-  Serial.begin(115200);
+  Serial.begin(57600);
 
 }  
 

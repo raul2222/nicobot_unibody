@@ -5,14 +5,14 @@
 #define TAM_MSG_I 1 /*num caracteres por mensaje*/
 
 // TIEMPOS
-#define BLOQUEO_TAREA_LOOPCONTR_MS 10 
+#define BLOQUEO_TAREA_LOOPCONTR_MS 10
 #define BLOQUEO_TAREA_MEDIDA_MS 100
 
 int dutyCycle = 0;
 uint8_t r=0;
 float flancos = 0;
 float volt_max = 11.0;
-float volt_min = 0.55;
+float volt_min = 0.5;
 float Akpi=0;
 float Akp=0;
 float error_2=0; // e(t-2)
