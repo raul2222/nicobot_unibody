@@ -2,12 +2,9 @@
 PRACTICA 1: IMPLEMENTACION DE UN CONTROLADOR PARA UN MOTOR DE DC
 */
 // DECLARACIONES //////////////////////////////////////////////////////////////////////////
-
-
 #define NOMBRE_PRAC "NICOBOT UNIBODY"
 #define VERSION_SW "0.1"
 #define ACTIVA_DEBUG
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "esp_log.h"
@@ -22,12 +19,106 @@ PRACTICA 1: IMPLEMENTACION DE UN CONTROLADOR PARA UN MOTOR DE DC
 #include "log.h"
 #include "setup.h"
 
+void task_loopcontr(void* arg) {
+
+  while(1) {    
+    if(start_stop == 1){
+      Akpi=Kp+(Ki*dt);
+      Akp = -Kp;
+      A0d = Kd/dt;
+      A1d = (-2.0)*(Kd/dt);
+      A2d = Kd/dt;
+      Kd == 0 ? tau = 0 : tau = Kd/(Kp*N); // IIR filter time constant  
+      isinf(dt / (2*tau)) ? alpha = 0 : alpha = dt / (2*tau);
+
+      if (ACTIVA_P1C_MED_ANG == 0){
+        v_medida = (ang_cnt * 2.0 * PI) / flancos;
+        da = v_medida - anterior;
+        anterior = v_medida;
+        v_medida = da / (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0); // rad/s
+        //v_medida = v_medida / (2.0 * PI); // rps
+      } else {
+        v_medida = (ang_cnt * 360.0) / flancos;  // Calculo de angulo
+      }
+
+      error_2 = error_1;
+      error_1 = error_0;
+      error_0 = setpoint - v_medida;
+      // PI
+      output = output+(Akpi*error_0)+(Akp*error_1);
+      // Filtered D
+      if(alpha !=0) {
+        d1 = d0;
+        d0 = (A0d * error_0) + (A1d * error_1) + (A2d * error_2);
+        fd1 = fd0;
+        fd0 = ((alpha) / (alpha + 1)) * (d0 + d1) - ((alpha - 1) / (alpha + 1)) * fd1;
+        output = output + fd0;  
+      }
+
+      if (abs(output) > volt_max and output > 0) output = volt_max ; // min voltage value for dc-motor
+      if (abs(output) > volt_max and output < 0) output = -volt_max ;
+
+      if (ACTIVA_P1C_MED_ANG == 1) {
+        no_error_motor_break();
+      } else {
+        if (abs(output) < volt_min and setpoint > 0) output = volt_min ; 
+        if (abs(output) < volt_min and setpoint < 0) output = -volt_min ;
+      }
+      if( setpoint == 0) {
+        clean();
+      } else {
+        excita_motor(output);
+      }
+    } else {
+      //clean();
+    }
+      // delay 0.01s
+      vTaskDelay(BLOQUEO_TAREA_LOOPCONTR_MS / portTICK_PERIOD_MS);
+  }
+}
+
+
 /*
 LOOP ---- NO USAR ------------------------------------------------------------------- 
 */
 void loop() {
+ if(Serial.available() > 0){
 
-
+       lastMotorCommand = millis();
+       String str = Serial.readStringUntil('\r');
+       Serial.println(str);
+       if (str.indexOf("e") == 0 ) {
+            Serial.print(ang_cnt); 
+            Serial.print(" "); 
+            Serial.println(ang_cnt2);
+            Serial.flush();
+        }
+        if (str.indexOf("u") == 0 ) {
+            Serial.println("OK"); 
+            Serial.flush();
+        }
+        if (str.indexOf("r") == 0 ) {
+            ang_cnt=0;
+            ang_cnt2=0;
+            //reset contador encoder
+            Serial.println("OK"); 
+            Serial.flush();
+        } 
+        if (str.indexOf("m") == 0 ) {
+            str.replace("m", "");
+            int i1 = str.indexOf(" ");
+            String firstValue = str.substring(0, i1);
+            String second = str.substring(i1 + 1);
+            setpoint = firstValue.toFloat();
+            setpoint2 = second.toFloat();
+            Serial.println("OK"); 
+            Serial.flush();
+        }
+    }
+    if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
+          //setpoint = 0;
+          //setpoint2 = 0;
+    }
 }
 
 
@@ -64,8 +155,7 @@ void excita_motor(float v_motor){
     if(dutyCycle <= 0){
         dutyCycle = 0;
     }
-  	
-  	// Excitacion del motor con PWM
+
   	ledcWrite(0, dutyCycle);
     //dacWrite(26,dutyCycle);
 }  
@@ -85,7 +175,7 @@ void excita_motor2(float v_motor){
     }
     if(v_motor < 0){    //("Hacia atras");
         v_motor = abs(v_motor); // valor en positivo del voltaje el cambio de direccion lo hacen las variables
-        digitalWrite(PWM_f2, 1);
+        digitalWrite(PWM_f2,1);
     }
 
     direccion_ant2 = direccion2;
@@ -100,7 +190,7 @@ void excita_motor2(float v_motor){
         dutyCycle2 = 0;
     }
   	
-  	// Excitacion del motor con PWM
+
   	ledcWrite(1, dutyCycle2);
     //dacWrite(25,dutyCycle2);
 }  

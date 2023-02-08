@@ -6,7 +6,7 @@
 
 // TIEMPOS
 #define BLOQUEO_TAREA_LOOPCONTR_MS 10
-#define BLOQUEO_TAREA_MEDIDA_MS 700
+#define BLOQUEO_TAREA_MEDIDA_MS 35
 
 #define AUTO_STOP_INTERVAL 2000
 long lastMotorCommand = 0;
@@ -16,7 +16,7 @@ int dutyCycle = 0;
 uint8_t r=0;
 float flancos = 834.0;
 float volt_max = 11.0;
-float volt_min = 0.5;
+float volt_min = 0.82;
 float Akpi=0;
 float Akp=0;
 float error_2=0; // e(t-2)
@@ -112,14 +112,14 @@ int16_t adc0 = 0;
 
 
 // Pines driver motor ///////////////A/////////////////////////////////////////////////////
-// RIGHT
-const uint8_t PWM_Pin = 26; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f = 14; // Entrada PWM1 // direccion
-const uint8_t A_enc_pin = 32;
-//LEFT
+// L
+const uint8_t PWM_Pin = 33; // Entrada EN // para mi controlador es la unica salida pwm
+const uint8_t PWM_f = 9; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin = 39;
+//RIGHT
 const uint8_t PWM_Pin2 = 25; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f2 = 12; // Entrada PWM1 // direccion
-const uint8_t A_enc_pin2 = 35;
+const uint8_t PWM_f2 = 13; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin2 = 34;
 // Voltaje maximo motor ////////////////////////////////////////////////////////////////////
 float SupplyVolt = 12;
 

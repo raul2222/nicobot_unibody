@@ -67,27 +67,25 @@ void setup() {
       exit(-1);
   }
 
- if(xTaskCreatePinnedToCore( task_serial , "task_serial", 1024, NULL, 5, NULL, 0) != pdPASS){
+ /*if(xTaskCreatePinnedToCore( task_serial , "task_serial", 1024, NULL, 5, NULL, 1) != pdPASS){
       Serial.println("Error en creacion tarea task_medidas");
       exit(-1);
- }
+ }*/
 
 
   // Configuracion del encoder
   config_enc();
+  flancos = 834.0;
 
   dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
   dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
-  Kp=0.5;
-  Ki=0.3;
-  Kd=0.001;
-  N = 7;
+  Kp = Kp2=1.2;
+  Ki=Ki2=2.45;
+  Kd=Kd2=0.00122;
+  N = N2=1;
   
-  flancos = 834.0;
-  Kp2=0.5;
-  Ki2=0.3;
-  Kd2=0.001;
-  N2=7;
+
+
   
   ACTIVA_P1C_MED_ANG2 == 0;
   ACTIVA_P1C_MED_ANG == 0;
@@ -161,8 +159,8 @@ void config_enc(){
 
 void config_PWM(){
     // Configuracion de pines de control PWM
-    pinMode(PWM_f, OUTPUT); 
-    pinMode(PWM_f2, OUTPUT); 
+    pinMode(PWM_f, OUTPUT); digitalWrite(PWM_f,0);
+    pinMode(PWM_f2, OUTPUT); digitalWrite(PWM_f2,0);
     pinMode(2, OUTPUT);
     // Configuracion LED PWM 
     ledcSetup(pwmChannel, pwmfreq, pwmresolution);

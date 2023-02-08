@@ -8,62 +8,72 @@ void task_medidas(void* arg)
   while (1) {
     if (start_stop == 1) {
       // Mostrar medidas de angulo y velocidad del motor
-      Serial2.print("C: ");
-      Serial2.print(ang_cnt);
+      Serial.print("C: ");
+      Serial.print(ang_cnt);
+          Serial.print(", Med:");
+          Serial.print(v_medida);
+            Serial.print(", O: ");
+      Serial.print(output);
+            Serial.print(", C: ");
+      Serial.print(ang_cnt2);
+                Serial.print(", Med:");
+          Serial.print(v_medida2);
+            Serial.print(", O: ");
+      Serial.print(output2);
 
-      if ( ACTIVA_P1C_MED_ANG == 1 ) { // Medida de angulo
+  /*    if ( ACTIVA_P1C_MED_ANG == 1 ) { // Medida de angulo
         a_medida = (ang_cnt * 360) / flancos;
-        Serial2.print(", M:");
-        Serial2.print(a_medida);
-        Serial2.print(" A:");
-        Serial2.print(setpoint, 2);
+        Serial.print(", M:");
+        Serial.print(a_medida);
+        Serial.print(" A:");
+        Serial.print(setpoint, 2);
 
       } else { // Medida de velocidad
-          Serial2.print(", Med:");
-          Serial2.print(v_medida);
-          Serial2.print(", Ref:");
-          Serial2.print(setpoint, 2);
+          Serial.print(", Med:");
+          Serial.print(v_medida);
+          Serial.print(", Ref:");
+          Serial.print(setpoint, 2);
 
       }
 
-      Serial2.print(", V:");
-      Serial2.print(output, 2);
-      Serial2.print(", D: ");
-      Serial2.print(dutyCycle);
+      Serial.print(", V:");
+      Serial.print(output, 2);
+      Serial.print(", D: ");
+      Serial.print(dutyCycle);
 
 
-      Serial2.print(",// C: ");
-      Serial2.print(ang_cnt2);
+      Serial.print(",// C: ");
+      Serial.print(ang_cnt2);
 
       if ( ACTIVA_P1C_MED_ANG2 == 1 ) { // Medida de angulo
         a_medida2 = (ang_cnt2 * 360) / flancos;
-        Serial2.print(", M:");
-        Serial2.print(a_medida2);
-        Serial2.print(" A:");
-        Serial2.print(setpoint2, 2);
+        Serial.print(", M:");
+        Serial.print(a_medida2);
+        Serial.print(" A:");
+        Serial.print(setpoint2, 2);
 
       } else { // Medida de velocidad
-          Serial2.print(", Med:");
-          Serial2.print(v_medida2);
-          Serial2.print(", Ref:");
-          Serial2.print(setpoint2, 2);
+          Serial.print(", Med:");
+          Serial.print(v_medida2);
+          Serial.print(", Ref:");
+          Serial.print(setpoint2, 2);
 
       }
 
-      Serial2.print(", V:");
-      Serial2.print(output2, 2);
-      Serial2.print(", D: ");
-      Serial2.print(dutyCycle2);
+      Serial.print(", V:");
+      Serial.print(output2, 2);
+      Serial.print(", D: ");
+      Serial.print(dutyCycle2);
 
       
-      Serial2.print(" Kp:");
-      Serial2.print(Kp, 5);
-      Serial2.print(" Ki:");
-      Serial2.print(Ki, 5);
-      Serial2.print(" Kd:");
-      Serial2.print(Kd, 5);
+      Serial.print(" Kp:");
+      Serial.print(Kp, 5);
+      Serial.print(" Ki:");
+      Serial.print(Ki, 5);
+      Serial.print(" Kd:");
+      Serial.print(Kd, 5);
 
-      /*Serial2.print(", A:");
+      /*Serial.print(", A:");
       Serial.print(current,4);        // Print Raw Reading
       Serial.print(", W:");
       Serial.print(output*current); */
@@ -117,7 +127,7 @@ void task_medidas(void* arg)
 
 #endif*/
 
-      Serial2.println(" ");
+      Serial.println(" ");
 
     } else {
 

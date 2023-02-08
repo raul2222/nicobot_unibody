@@ -3,21 +3,21 @@
 
 void task_serial(void* arg)
 {
-  
+  int32_t cnt_left= 0;
+  int32_t cnt_right = 0;
   while (1) {
+    cnt_left = ang_cnt;
+    cnt_right = ang_cnt2;
     if(Serial.available() > 0){
 
        lastMotorCommand = millis();
        String str = Serial.readStringUntil('\r');
-       Serial2.println(str);
+       Serial.println(str);
        if (str.indexOf("e") == 0 ) {
-            Serial.print(ang_cnt); 
+            Serial.print(cnt_left); 
             Serial.print(" "); 
-            Serial.println(ang_cnt2);
+            Serial.println(cnt_right);
             Serial.flush();
-            Serial2.print(ang_cnt); 
-            Serial2.print(" "); 
-            Serial2.println(ang_cnt2);
         }
 
         if (str.indexOf("u") == 0 ) {
@@ -26,15 +26,15 @@ void task_serial(void* arg)
         }
           
         if (str.indexOf("r") == 0 ) {
-            //ang_cnt=0;
-            //ang_cnt2=0;
+            ang_cnt=0;
+            ang_cnt2=0;
             //reset contador encoder
             Serial.println("OK"); 
             Serial.flush();
         }
                 
         if (str.indexOf("m") == 0 ) {
-            //Serial2.println(str);
+            //Serial.println(str);
             str.replace("m", "");
             int i1 = str.indexOf(" ");
 
@@ -44,23 +44,18 @@ void task_serial(void* arg)
             setpoint2 = second.toFloat();
             Serial.println("OK"); 
             Serial.flush();
-            Serial2.println(setpoint);
-            Serial2.println(setpoint2);
 
-        }
 
-        if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
-          setpoint = 0;
-          setpoint2 = 0;
         }
           
 
     }
     if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
-          setpoint = 0;
-          setpoint2 = 0;
+          //setpoint = 0;
+          //setpoint2 = 0;
     }
-    vTaskDelay(20 / portTICK_PERIOD_MS);
+    vTaskDelay(5 / portTICK_PERIOD_MS);
+    
   }
 }
 
@@ -73,8 +68,8 @@ void task_config(void *pvParameter) {
 
   while(1) { 
     // Detectar caracter enviado
-    if(Serial2.available() > 0){
-        String str = Serial2.readStringUntil('\n');
+    if(Serial.available() > 0){
+        String str = Serial.readStringUntil('\n');
         ini_char = str[0];
         if(str.indexOf("V") == 0 or str.indexOf("v") == 0){
             str.replace("V","");str.replace("v","");
@@ -87,41 +82,42 @@ void task_config(void *pvParameter) {
             //puesta_a_cero();
             
             
-            ACTIVA_P1C_MED_ANG = 0;
+            ACTIVA_P1C_MED_ANG = 0;ACTIVA_P1C_MED_ANG2 = 0;
             //init_eeprom();
             #ifdef ACTIVA_DEBUG
-            Serial2.print("----Modo Velocidad----");
+            Serial.print("----Modo Velocidad----");
             #endif
             
       }
       if (str.indexOf("R") == 0  or str.indexOf("r") == 0) {
             str.replace("R", "");str.replace("r", "");str.replace(",",".");
-            setpoint = str.toFloat();
-            setpoint2 = setpoint;
+            setpoint =setpoint2 = str.toFloat();
+
             if( ACTIVA_P1C_MED_ANG == 1 ){
               #ifdef ACTIVA_DEBUG
-                Serial2.print("Angulo= ");
-                Serial2.print(setpoint, 2);
-                Serial2.println("º");
+                Serial.print("Angulo= ");
+                Serial.print(setpoint, 2);
+                Serial.println("º");
               #endif
             }else{
 
                 
                 #ifdef ACTIVA_DEBUG
-                Serial2.print("Velocidad= ");
-                Serial2.print(setpoint);
-                Serial2.println("rps");
+                Serial.print("Velocidad= ");
+                Serial.print(setpoint);
+                Serial.println("rps");
                 #endif
             }
 
          }
       if(str.indexOf("A") == 0 or str.indexOf("a") == 0){
             str.replace("A", "");str.replace("a", "");
-            ACTIVA_P1C_MED_ANG = 1;
+            ACTIVA_P1C_MED_ANG = 1;ACTIVA_P1C_MED_ANG2 = 1;
             volt_max = 3.0;
+            ang_cnt=ang_cnt2=0;
             clean();   //init_eeprom();
             #ifdef ACTIVA_DEBUG
-            Serial2.println("----Modo Angulo----");
+            Serial.println("----Modo Angulo----");
             #endif
       }
 
@@ -129,7 +125,7 @@ void task_config(void *pvParameter) {
             str.replace("Z", "");str.replace("z", "");
              start_stop = 1;
              #ifdef ACTIVA_DEBUG
-             Serial2.println("--START--");
+             Serial.println("--START--");
              #endif
              
       }
@@ -141,13 +137,13 @@ void task_config(void *pvParameter) {
               start_stop = 1;
               
               #ifdef ACTIVA_DEBUG
-              Serial2.println("--START--");
+              Serial.println("--START--");
               #endif
           }
           else{
               start_stop = 0;
               #ifdef ACTIVA_DEBUG
-              Serial2.println("--STOP--");
+              Serial.println("--STOP--");
               #endif
           }
           clean();
@@ -155,7 +151,7 @@ void task_config(void *pvParameter) {
       if(str.indexOf("P") == 0 or str.indexOf("p") == 0  ){
           str.replace("P",""); str.replace("p","");str.replace(",",".");
           //K_p = str.toFloat();
-          Kp = str.toFloat();
+          Kp = str.toFloat(); Kp2 = Kp;
           Serial.println(Kp);
          
           
@@ -163,7 +159,7 @@ void task_config(void *pvParameter) {
       if(str.indexOf("I") == 0 or str.indexOf("i") == 0){
           str.replace("I","");str.replace("i","");str.replace(",",".");
           //T_i = str.toFloat();
-          Ki = str.toFloat();
+          Ki = Ki2 =  str.toFloat();  
           Serial.println(Ki);
          
         
@@ -171,7 +167,7 @@ void task_config(void *pvParameter) {
       if(str.indexOf("D") == 0 or str.indexOf("d") == 0){
           str.replace("D","");str.replace("d","");str.replace(",",".");
           //T_d = str.toFloat();
-          Kd = str.toFloat();
+          Kd =Kd2 = str.toFloat();
           Serial.println(Kd);
           
       }
@@ -181,6 +177,6 @@ void task_config(void *pvParameter) {
 
 
     // Activacion de la tarea cada 0.1s
-    vTaskDelay(300 / portTICK_PERIOD_MS);
+    vTaskDelay(150 / portTICK_PERIOD_MS);
   }
 }
