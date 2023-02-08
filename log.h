@@ -10,16 +10,27 @@ void task_medidas(void* arg)
       // Mostrar medidas de angulo y velocidad del motor
       Serial.print("C: ");
       Serial.print(ang_cnt);
-          Serial.print(", Med:");
-          Serial.print(v_medida);
-            Serial.print(", O: ");
+      Serial.print(", Med:");
+      Serial.print(v_medida);
+      Serial.print(", O: ");
       Serial.print(output);
-            Serial.print(", C: ");
+
+Serial.print("   ");
+      Serial.print(", C: ");
       Serial.print(ang_cnt2);
-                Serial.print(", Med:");
-          Serial.print(v_medida2);
-            Serial.print(", O: ");
+      Serial.print(", Med:");
+      Serial.print(v_medida2);
+      Serial.print(", O: ");
       Serial.print(output2);
+
+      Serial.print("   ");
+      Serial.print(" Kp:");
+      Serial.print(Kp, 5);
+      Serial.print(" Ki:");
+      Serial.print(Ki, 5);
+      Serial.print(" Kd:");
+      Serial.print(Kd, 5);
+
 
   /*    if ( ACTIVA_P1C_MED_ANG == 1 ) { // Medida de angulo
         a_medida = (ang_cnt * 360) / flancos;
@@ -66,12 +77,7 @@ void task_medidas(void* arg)
       Serial.print(dutyCycle2);
 
       
-      Serial.print(" Kp:");
-      Serial.print(Kp, 5);
-      Serial.print(" Ki:");
-      Serial.print(Ki, 5);
-      Serial.print(" Kd:");
-      Serial.print(Kd, 5);
+
 
       /*Serial.print(", A:");
       Serial.print(current,4);        // Print Raw Reading

@@ -97,7 +97,7 @@ void loop() {
             Serial.println("OK"); 
             Serial.flush();
         }
-        if (str.indexOf("r") == 0 ) {
+        if (str.indexOf("c") == 0 ) {
             ang_cnt=0;
             ang_cnt2=0;
             //reset contador encoder
@@ -106,14 +106,51 @@ void loop() {
         } 
         if (str.indexOf("m") == 0 ) {
             str.replace("m", "");
+             ACTIVA_P1C_MED_ANG2 = 0;
             int i1 = str.indexOf(" ");
             String firstValue = str.substring(0, i1);
+            if (firstValue != 0) ACTIVA_P1C_MED_ANG =0;
             String second = str.substring(i1 + 1);
+            if (second != 0) ACTIVA_P1C_MED_ANG2 =0;
             setpoint = firstValue.toFloat();
             setpoint2 = second.toFloat();
             Serial.println("OK"); 
             Serial.flush();
         }
+        if (str.indexOf("r") == 0 ) {
+            str.replace("r", "");
+            ACTIVA_P1C_MED_ANG2 = 1;
+            volt_max = 6.0;
+            ang_cnt2=0;
+            clean();  
+            setpoint2 = str.toFloat();
+        }
+        if (str.indexOf("l") == 0 ) {
+            str.replace("l", "");
+            ACTIVA_P1C_MED_ANG = 1;
+            volt_max = 6.0;
+            ang_cnt2=0;
+            clean();   
+            setpoint = str.toFloat();
+        }
+
+        if(str.indexOf("P") == 0 or str.indexOf("p") == 0  ){
+            str.replace("P",""); str.replace("p","");str.replace(",",".");
+            Kp =Kp2 = str.toFloat();
+        }
+       if(str.indexOf("I") == 0 or str.indexOf("i") == 0){
+            str.replace("I","");str.replace("i","");str.replace(",",".");
+            Ki = Ki2 =  str.toFloat();  
+        }
+        if(str.indexOf("D") == 0 or str.indexOf("d") == 0){
+            str.replace("D","");str.replace("d","");str.replace(",",".");
+            Kd =Kd2 = str.toFloat();  
+        }            
+        if(str.indexOf("N") == 0 or str.indexOf("n") == 0){
+            str.replace("N","");str.replace("n","");str.replace(",",".");
+            N =N2 = str.toFloat();  
+        }           
+
     }
     if (millis() > (AUTO_STOP_INTERVAL + lastMotorCommand) ){
           //setpoint = 0;
@@ -156,8 +193,8 @@ void excita_motor(float v_motor){
         dutyCycle = 0;
     }
 
-  	ledcWrite(0, dutyCycle);
-    //dacWrite(26,dutyCycle);
+  	//ledcWrite(0, dutyCycle);
+    dacWrite(26,dutyCycle);
 }  
 void excita_motor2(float v_motor){
     
@@ -191,6 +228,6 @@ void excita_motor2(float v_motor){
     }
   	
 
-  	ledcWrite(1, dutyCycle2);
-    //dacWrite(25,dutyCycle2);
+  	//ledcWrite(1, dutyCycle2);
+    dacWrite(25,dutyCycle2);
 }  

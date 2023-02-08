@@ -36,13 +36,13 @@ void setup() {
       Serial.println("Error en creacion tarea task_enc");
       exit(-1);
   }
-
+/*
   // Crear la tarea task_config
   if(xTaskCreatePinnedToCore( task_config , "task_config", 2048, NULL, 1, NULL,0) != pdPASS){
       Serial.println("Error en creacion tarea task_config");
       exit(-1);
   }
-
+*/
   // Crear la tarea task_loopcontr
   if(xTaskCreatePinnedToCore( task_loopcontr , "task_loopcontr", 4096, NULL, 2, NULL,1) != pdPASS){
       Serial.println("Error en creacion tarea task_loopcontr");
@@ -75,14 +75,14 @@ void setup() {
 
   // Configuracion del encoder
   config_enc();
-  flancos = 834.0;
+  flancos = 1008.0;
 
   dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
   dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
-  Kp = Kp2=1.2;
-  Ki=Ki2=2.45;
-  Kd=Kd2=0.00122;
-  N = N2=1;
+  Kp = Kp2=  1.11;
+  Ki = Ki2= 1.22;
+  Kd = Kd2 = 0.00122;
+  N = N2 =2.4;
   
 
 
@@ -162,13 +162,16 @@ void config_PWM(){
     pinMode(PWM_f, OUTPUT); digitalWrite(PWM_f,0);
     pinMode(PWM_f2, OUTPUT); digitalWrite(PWM_f2,0);
     pinMode(2, OUTPUT);
+
+    dacWrite(26,0);
+    dacWrite(25,0);
     // Configuracion LED PWM 
-    ledcSetup(pwmChannel, pwmfreq, pwmresolution);
+   /* ledcSetup(pwmChannel, pwmfreq, pwmresolution);
     ledcSetup(pwmChannel2, pwmfreq, pwmresolution);
     // Asignar el controlador PWM al GPIO
     
     ledcAttachPin(PWM_Pin, 0);
-    ledcAttachPin(PWM_Pin2, 1);
+    ledcAttachPin(PWM_Pin2, 1);*/
 }  
 
 ////////////////////////////////////////////////////////////////////////////////////

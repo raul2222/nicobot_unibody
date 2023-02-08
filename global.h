@@ -6,7 +6,7 @@
 
 // TIEMPOS
 #define BLOQUEO_TAREA_LOOPCONTR_MS 10
-#define BLOQUEO_TAREA_MEDIDA_MS 35
+#define BLOQUEO_TAREA_MEDIDA_MS 70
 
 #define AUTO_STOP_INTERVAL 2000
 long lastMotorCommand = 0;
@@ -14,9 +14,9 @@ long lastMotorCommand = 0;
 
 int dutyCycle = 0;
 uint8_t r=0;
-float flancos = 834.0;
-float volt_max = 11.0;
-float volt_min = 0.82;
+float flancos = 1008.0;
+float volt_max = 11.99;
+float volt_min = 0.79;
 float Akpi=0;
 float Akp=0;
 float error_2=0; // e(t-2)
@@ -98,7 +98,6 @@ float da2 = 0;
 float error_anterior2 = 0;
 
 
-
 // Configuración PWM  ////////////////////////////////////////////////////////////////////
 uint32_t pwmfreq = 1000; // 1KHz
 const uint8_t pwmChannel = 0;
@@ -113,7 +112,7 @@ int16_t adc0 = 0;
 
 // Pines driver motor ///////////////A/////////////////////////////////////////////////////
 // L
-const uint8_t PWM_Pin = 33; // Entrada EN // para mi controlador es la unica salida pwm
+const uint8_t PWM_Pin = 26; // Entrada EN // para mi controlador es la unica salida pwm
 const uint8_t PWM_f = 9; // Entrada PWM1 // direccion
 const uint8_t A_enc_pin = 39;
 //RIGHT
@@ -148,6 +147,7 @@ void clean();
 void clean2();
 void excita_motor2(float v_motor);
 void task_serial(void* arg);
+void task_loopcontr(void* arg);
 
 // TABLA VELOCIDAD-VOLTAJE P1D
 #define LONG_LUT 12
