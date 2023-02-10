@@ -193,8 +193,8 @@ void excita_motor(float v_motor){
         dutyCycle = 0;
     }
 
-  	//ledcWrite(0, dutyCycle);
-    dacWrite(26,dutyCycle);
+  	ledcWrite(0, dutyCycle);
+    //dacWrite(26,dutyCycle);
 }  
 void excita_motor2(float v_motor){
     
@@ -228,6 +228,6 @@ void excita_motor2(float v_motor){
     }
   	
 
-  	//ledcWrite(1, dutyCycle2);
-    dacWrite(25,dutyCycle2);
+  	ledcWrite(1, dutyCycle2);
+    //dacWrite(25,dutyCycle2);
 }  
