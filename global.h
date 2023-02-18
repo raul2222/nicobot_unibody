@@ -11,6 +11,7 @@
 #define AUTO_STOP_INTERVAL 2000
 long lastMotorCommand = 0;
 
+int LED_PWM = 18;
 
 int dutyCycle = 0;
 uint8_t r=0;
@@ -162,4 +163,3 @@ const float Vel_LUT[LONG_LUT] = {0.25,0.7, 1.12, 1.58, 2.5, 3.25, 4.1, 5, 5.91, 
 xQueueHandle cola_enc; // Cola encoder
 
 xQueueHandle cola_enc2; 
-

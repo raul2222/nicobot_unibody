@@ -156,6 +156,7 @@ void loop() {
           //setpoint = 0;
           //setpoint2 = 0;
     }
+    ledcWrite(2, (dutyCycle2+dutyCycle) / 2);
 }
 
 

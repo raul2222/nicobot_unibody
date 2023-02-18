@@ -172,6 +172,9 @@ void config_PWM(){
     
     ledcAttachPin(PWM_Pin, 0);
     ledcAttachPin(PWM_Pin2, 1);
+
+    ledcSetup(2, pwmfreq*2, pwmresolution);
+    ledcAttachPin(LED_PWM, 2);
 }  
 
 ////////////////////////////////////////////////////////////////////////////////////
