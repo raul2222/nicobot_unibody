@@ -114,7 +114,7 @@ int16_t adc0 = 0;
 // Pines driver motor ///////////////A/////////////////////////////////////////////////////
 // L
 const uint8_t PWM_Pin = 26; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f = 9; // Entrada PWM1 // direccion
+const uint8_t PWM_f = 12; // Entrada PWM1 // direccion
 const uint8_t A_enc_pin = 39;
 //RIGHT
 const uint8_t PWM_Pin2 = 25; // Entrada EN // para mi controlador es la unica salida pwm

@@ -80,7 +80,7 @@ void setup() {
   dt = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
   dt2 = (BLOQUEO_TAREA_LOOPCONTR_MS / 1000.0);
   Kp = Kp2=  1.11;
-  Ki = Ki2= 1.22;
+  Ki = Ki2= 4;
   Kd = Kd2 = 0.00122;
   N = N2 =2.4;
   
@@ -89,7 +89,7 @@ void setup() {
   
   ACTIVA_P1C_MED_ANG2 == 0;
   ACTIVA_P1C_MED_ANG == 0;
-  setpoint = 0; // LEFT
+  setpoint = 0.0; // LEFT
   setpoint2 = 0;  // 
   start_stop=1;
   start_stop2=1;
@@ -161,7 +161,9 @@ void config_PWM(){
     // Configuracion de pines de control PWM
     pinMode(PWM_f, OUTPUT); digitalWrite(PWM_f,0);
     pinMode(PWM_f2, OUTPUT); digitalWrite(PWM_f2,0);
-    pinMode(2, OUTPUT);
+    pinMode(2, OUTPUT);digitalWrite(2,1);
+
+    pinMode(LED_PWM, OUTPUT);digitalWrite(LED_PWM,0);
 
     //dacWrite(PWM_Pin,0);
     //dacWrite(PWM_Pin2,0);
@@ -173,8 +175,9 @@ void config_PWM(){
     ledcAttachPin(PWM_Pin, 0);
     ledcAttachPin(PWM_Pin2, 1);
 
-    ledcSetup(2, pwmfreq*2, pwmresolution);
+    ledcSetup(2, pwmfreq, pwmresolution);
     ledcAttachPin(LED_PWM, 2);
+    ledcWrite(2, 120);
 }  
 
 ////////////////////////////////////////////////////////////////////////////////////
