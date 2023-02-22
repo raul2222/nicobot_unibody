@@ -112,14 +112,14 @@ int16_t adc0 = 0;
 
 
 // Pines driver motor ///////////////A/////////////////////////////////////////////////////
-// L
-const uint8_t PWM_Pin = 26; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f = 12; // Entrada PWM1 // direccion
-const uint8_t A_enc_pin = 39;
-//RIGHT
-const uint8_t PWM_Pin2 = 25; // Entrada EN // para mi controlador es la unica salida pwm
-const uint8_t PWM_f2 = 13; // Entrada PWM1 // direccion
-const uint8_t A_enc_pin2 = 34;
+// RIGHT
+const uint8_t PWM_Pin = 26; // 
+const uint8_t PWM_f = 22; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin = 35;
+//LEFT
+const uint8_t PWM_Pin2 = 25; //
+const uint8_t PWM_f2 = 21; // Entrada PWM1 // direccion
+const uint8_t A_enc_pin2 = 32;
 // Voltaje maximo motor ////////////////////////////////////////////////////////////////////
 float SupplyVolt = 12;
 
