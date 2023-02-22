@@ -106,12 +106,13 @@ void loop() {
         } 
         if (str.indexOf("m") == 0 ) {
             str.replace("m", "");
-             ACTIVA_P1C_MED_ANG2 = 0;
+            // ACTIVA_P1C_MED_ANG2 = 0;
+            // ACTIVA_P1C_MED_ANG = 0;
             int i1 = str.indexOf(" ");
             String firstValue = str.substring(0, i1);
-            //if (firstValue != 0) ACTIVA_P1C_MED_ANG =0;
+            if (firstValue != 0) ACTIVA_P1C_MED_ANG =0;
             String second = str.substring(i1 + 1);
-            //if (second != 0) ACTIVA_P1C_MED_ANG2 =0;
+            if (second != 0) ACTIVA_P1C_MED_ANG2 =0;
             setpoint = firstValue.toFloat();
             setpoint2 = second.toFloat();
             Serial.println("OK"); 
@@ -119,8 +120,8 @@ void loop() {
         }
         if (str.indexOf("r") == 0 ) {
             str.replace("r", "");
-            if (ACTIVA_P1C_MED_ANG == 0){
-              ACTIVA_P1C_MED_ANG = 1;
+            if (ACTIVA_P1C_MED_ANG2 == 0){
+              ACTIVA_P1C_MED_ANG2 = 1;
               ang_cnt2=0;
             }
             
@@ -187,11 +188,11 @@ void excita_motor(float v_motor){
     if(direccion_ant != direccion){  //("Cambio de sentido");
     }
     if(v_motor > 0){    //Serial.println("Hacia adelante");
-        digitalWrite(PWM_f, 0); // el pin de direccion
+        digitalWrite(PWM_f, 1); // el pin de direccion
     }
     if(v_motor < 0){    //("Hacia atras");
         v_motor = abs(v_motor); // valor en positivo del voltaje el cambio de direccion lo hacen las variables
-        digitalWrite(PWM_f, 1);
+        digitalWrite(PWM_f, 0);
     }
 
     direccion_ant = direccion;
@@ -221,11 +222,11 @@ void excita_motor2(float v_motor){
     if(direccion_ant2 != direccion2){  //("Cambio de sentido");
     }
     if(v_motor > 0){    //Serial.println("Hacia adelante");
-        digitalWrite(PWM_f2, 1); // el pin de direccion
+        digitalWrite(PWM_f2, 0); // el pin de direccion
     }
     if(v_motor < 0){    //("Hacia atras");
         v_motor = abs(v_motor); // valor en positivo del voltaje el cambio de direccion lo hacen las variables
-        digitalWrite(PWM_f2,0);
+        digitalWrite(PWM_f2,1);
     }
 
     direccion_ant2 = direccion2;
